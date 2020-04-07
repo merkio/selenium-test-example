@@ -1,3 +1,4 @@
+[![Language grade: Java](https://img.shields.io/lgtm/grade/java/g/merkushevio/selenium-test-example.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/merkushevio/selenium-test-example/context:java)
 ## Selenium tests with junit5, allure, maven
 This project is an example how to build simple selenium tests with report
 #### Preconditions
