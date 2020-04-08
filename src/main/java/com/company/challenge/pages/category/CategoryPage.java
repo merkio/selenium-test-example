@@ -1,7 +1,6 @@
 package com.company.challenge.pages.category;
 
 import com.company.challenge.pages.base.BasePage;
-import com.company.challenge.pages.base.PageFactory;
 import com.company.challenge.pages.checkout.CheckoutPage;
 import io.qameta.allure.Step;
 import lombok.Getter;
@@ -34,6 +33,6 @@ public class CategoryPage extends BasePage {
         logger.info("Submit order");
         wait.until(ExpectedConditions.visibilityOf(submit));
         click(submit);
-        return new PageFactory(driver, logger, wait).getPage(CheckoutPage.class);
+        return getPage(CheckoutPage.class);
     }
 }

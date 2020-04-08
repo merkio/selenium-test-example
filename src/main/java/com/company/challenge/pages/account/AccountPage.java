@@ -1,7 +1,6 @@
 package com.company.challenge.pages.account;
 
 import com.company.challenge.pages.base.BasePage;
-import com.company.challenge.pages.base.PageFactory;
 import com.company.challenge.pages.category.CategoryPage;
 import io.qameta.allure.Step;
 import lombok.Getter;
@@ -40,7 +39,7 @@ public class AccountPage extends BasePage {
     public CategoryPage goToWomenCategoryPage() {
         wait.until(ExpectedConditions.visibilityOf(womenCategory));
         click(womenCategory);
-        return new PageFactory(driver, logger, wait).getPage(CategoryPage.class);
+        return getPage(CategoryPage.class);
     }
 
     @Step("Should see account page")

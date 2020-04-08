@@ -2,7 +2,6 @@ package com.company.challenge.pages.signup;
 
 import com.company.challenge.pages.account.AccountPage;
 import com.company.challenge.pages.base.BasePage;
-import com.company.challenge.pages.base.PageFactory;
 import io.qameta.allure.Step;
 import lombok.Getter;
 import lombok.Setter;
@@ -120,6 +119,6 @@ public class SignUpPage extends BasePage {
 
         click(submitAccount);
 
-        return new PageFactory(driver, logger, wait).getPage(AccountPage.class);
+        return getPage(AccountPage.class);
     }
 }

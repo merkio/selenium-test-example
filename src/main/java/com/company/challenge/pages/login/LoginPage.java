@@ -2,7 +2,6 @@ package com.company.challenge.pages.login;
 
 import com.company.challenge.pages.account.AccountPage;
 import com.company.challenge.pages.base.BasePage;
-import com.company.challenge.pages.base.PageFactory;
 import com.company.challenge.pages.signup.SignUpPage;
 import io.qameta.allure.Step;
 import lombok.Getter;
@@ -42,7 +41,7 @@ public class LoginPage extends BasePage {
         writeText(email, properties.userEmail());
         writeText(password, properties.userPassword());
         click(submitLogin);
-        return new PageFactory(driver, logger, wait).getPage(AccountPage.class);
+        return getPage(AccountPage.class);
     }
 
     @Step("Go to sign up page, with new user email {0}")
@@ -51,6 +50,6 @@ public class LoginPage extends BasePage {
         wait.until(ExpectedConditions.visibilityOf(emailCreate));
         writeText(emailCreate, email);
         click(submitCreate);
-        return new PageFactory(driver, logger, wait).getPage(SignUpPage.class);
+        return getPage(SignUpPage.class);
     }
 }

@@ -1,7 +1,6 @@
 package com.company.challenge.pages.home;
 
 import com.company.challenge.pages.base.BasePage;
-import com.company.challenge.pages.base.PageFactory;
 import com.company.challenge.pages.login.LoginPage;
 import io.qameta.allure.Step;
 import lombok.Getter;
@@ -32,6 +31,6 @@ public class HomePage extends BasePage {
     public LoginPage goToLoginPage() {
         wait.until(ExpectedConditions.visibilityOf(login));
         click(login);
-        return new PageFactory(driver, logger, wait).getPage(LoginPage.class);
+        return getPage(LoginPage.class);
     }
 }
