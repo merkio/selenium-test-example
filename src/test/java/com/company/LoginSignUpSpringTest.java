@@ -1,18 +1,21 @@
-package com.company.challenge;
+package com.company;
 
-import com.company.challenge.pages.home.HomePage;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import com.company.base.BaseWebTest;
+import com.company.pages.home.HomePage;
+import io.qameta.allure.Feature;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.testng.annotations.Test;
 
 import java.util.Date;
 
-@DisplayName("Login & SignUp Tests")
-public class LoginSignUpTest extends BaseTest {
+@Feature("Login & SignUp Tests")
+public class LoginSignUpSpringTest extends BaseWebTest {
 
-    @Test
-    @DisplayName("SignUp")
+    @Autowired
+    private HomePage homePage;
+
+    @Test(description = "SignUp")
     void signUpTest() {
-        HomePage homePage = getPage(HomePage.class);
 
         String timestamp = String.valueOf(new Date().getTime());
         String email = "hf_challenge_" + timestamp + "@hf" + timestamp.substring(7) + ".com";
@@ -26,11 +29,8 @@ public class LoginSignUpTest extends BaseTest {
             .shouldSeeAccountPageForUser(fullname);
     }
 
-    @Test
-    @DisplayName("Login")
+    @Test(description = "Login with default user")
     void logInTest() {
-        HomePage homePage = getPage(HomePage.class);
-
         String fullName = "Joe Black";
         homePage
             .goToHomePage()
