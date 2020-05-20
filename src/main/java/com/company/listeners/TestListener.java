@@ -2,7 +2,6 @@ package com.company.listeners;
 
 import com.company.WebDriverHolder;
 import io.qameta.allure.Attachment;
-import io.qameta.allure.Step;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
@@ -17,24 +16,27 @@ import org.testng.ITestResult;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Objects;
 
 @Slf4j
-public class FailureTestListener implements ITestListener {
+public class TestListener implements ITestListener {
 
     @Override
     public void onTestSuccess(ITestResult result) {
         analyzeLog(result.getMethod().getMethodName());
+        attachLogsFile(result.getMethod().getMethodName());
     }
 
     @Override
-    @SneakyThrows
     public void onTestFailure(ITestResult result) {
         uploadScreenshots(result);
         analyzeLog(result.getMethod().getMethodName());
+        attachLogsFile(result.getMethod().getMethodName());
     }
 
-    private void uploadScreenshots(ITestResult testResult) throws IOException {
+    private void uploadScreenshots(ITestResult testResult) {
         if (Objects.nonNull(WebDriverHolder.getDriver())) {
             try {
                 File scrFile = ((TakesScreenshot) WebDriverHolder.getDriver()).getScreenshotAs(OutputType.FILE);
@@ -45,12 +47,20 @@ public class FailureTestListener implements ITestListener {
         }
     }
 
+    @SneakyThrows(IOException.class)
     @Attachment(value = "Browser window screenshot", type = "image/png")
-    private static byte[] attachBrowserScreenshot(File file) throws IOException {
+    private static byte[] attachBrowserScreenshot(File file) {
         return FileUtils.readFileToByteArray(file);
     }
 
-    @Step("Adding collected logs")
+    @SneakyThrows(IOException.class)
+    @Attachment(value = "Logs", type = "text/plain")
+    private static byte[] attachLogsFile(String methodName) {
+        String root = System.getProperty("user.dir");
+        Path path = Paths.get(root, "target", "logs", methodName + "-" + Thread.currentThread().getName() + ".log");
+        return FileUtils.readFileToByteArray(path.toFile());
+    }
+
     private void analyzeLog(String methodName) {
         if (Objects.nonNull(WebDriverHolder.getDriver())) {
             log.info("Last URL was: '{}'", WebDriverHolder.getDriver().getCurrentUrl());
@@ -65,4 +75,5 @@ public class FailureTestListener implements ITestListener {
             log.info("Drives is 'null' cant perform analyze logs");
         }
     }
+
 }

@@ -5,6 +5,7 @@ target/
 
 allure-results
 allure-reports
+logs
 
 ### STS ###
 .apt_generated

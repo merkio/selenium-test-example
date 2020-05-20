@@ -1,7 +1,7 @@
 package com.company.base;
 
 import com.company.WebDriverHolder;
-import com.company.listeners.FailureTestListener;
+import com.company.listeners.TestListener;
 import com.company.pages.category.CategoryPage;
 import com.company.pages.checkout.CheckoutPage;
 import com.company.pages.home.HomePage;
@@ -16,7 +16,7 @@ import org.testng.annotations.*;
 import java.lang.reflect.Method;
 
 @Slf4j
-@Listeners({FailureTestListener.class})
+@Listeners({TestListener.class})
 public class BaseWebTest extends BaseSpringTest {
 
     @Lazy
