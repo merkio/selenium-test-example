@@ -115,9 +115,4 @@ public class BrowserActions extends BrowserWaiters {
     public static void selectByVisibleText(By element, String text) {
         new Select(tryFindElement(element)).selectByVisibleText(text);
     }
-
-    @Step("Scroll to the element '{element}'")
-    public static void scrollToElement(By element) {
-
-    }
 }
