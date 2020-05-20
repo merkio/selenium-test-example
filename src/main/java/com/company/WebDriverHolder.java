@@ -1,34 +1,29 @@
 package com.company;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.WebDriver;
-import org.springframework.stereotype.Component;
 
 import java.util.concurrent.TimeUnit;
 
 @Slf4j
-@Component
-@RequiredArgsConstructor
 public class WebDriverHolder {
 
-    private final ThreadLocal<WebDriver> webDriver = new ThreadLocal<>();
-    private final BrowserFactory factory;
+    private static final ThreadLocal<WebDriver> webDriver = new ThreadLocal<>();
 
-    public void setDriver(String browserName, String testName) {
-        log.info("Starting browser '{}'", browserName);
+    public static void setDriver(String browserName, String testName) {
+        log.info("Starting browser '{}' for test '{}'", browserName, testName);
 
-        WebDriver driver = factory.getBrowser(browserName, testName);
+        WebDriver driver = BrowserFactory.getBrowser(browserName, testName);
         driver.manage().timeouts().setScriptTimeout(3, TimeUnit.MINUTES);
         driver.manage().window().maximize();
         webDriver.set(driver);
     }
 
-    public WebDriver getDriver() {
+    public static WebDriver getDriver() {
         return webDriver.get();
     }
 
-    public void tearDownBrowser() {
+    public static void tearDownBrowser() {
         log.info("Closing Browser..");
         if (getDriver() != null) {
             try {

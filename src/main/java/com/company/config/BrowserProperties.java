@@ -1,32 +1,37 @@
 package com.company.config;
 
 
-import lombok.Data;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
+import org.aeonbits.owner.Config;
+import org.aeonbits.owner.ConfigFactory;
 
-@Data
-@Component
-public class BrowserProperties {
+@Config.LoadPolicy(Config.LoadType.MERGE)
+@Config.Sources({"classpath:tests.properties"})
+public interface BrowserProperties extends Config {
 
-    @Value("${browser}")
-    private String browser;
+    BrowserProperties BROWSER_PROPERTIES = ConfigFactory.create(BrowserProperties.class);
 
-    @Value("${browser.version}")
-    private String version;
+    @Key("browser")
+    String browser();
 
-    @Value("${browser.executeRemotely}")
-    private boolean executeRemotely;
+    @Key("browser.version")
+    String version();
 
-    @Value("${browser.enableVNC}")
-    private boolean enableVNC;
+    @Key("browser.executeRemotely")
+    boolean executeRemotely();
 
-    @Value("${browser.enableVideo}")
-    private boolean enableVideo;
+    @Key("browser.enableVNC")
+    boolean enableVNC();
 
-    @Value("${browser.enableCustomUserAgent}")
-    private boolean enableCustomUserAgent;
+    @Key("browser.enableVideo")
+    boolean enableVideo();
 
-    @Value("${browser.hub}")
-    private String hub;
+    @Key("browser.enableCustomUserAgent")
+    boolean enableCustomUserAgent();
+
+    @Key("browser.hub")
+    String hub();
+
+    @DefaultValue("60")
+    @Key("browser.fluent_wait")
+    Integer fluentWaitInterval();
 }

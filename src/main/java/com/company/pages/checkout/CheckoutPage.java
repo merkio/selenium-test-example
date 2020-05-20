@@ -1,6 +1,5 @@
 package com.company.pages.checkout;
 
-import com.company.WebDriverHolder;
 import com.company.pages.base.BasePage;
 import io.qameta.allure.Step;
 import lombok.extern.slf4j.Slf4j;
@@ -11,10 +10,6 @@ import static com.company.pages.checkout.CheckoutPageLocators.*;
 @Slf4j
 @Component
 public class CheckoutPage extends BasePage {
-
-    public CheckoutPage(WebDriverHolder driverHolder) {
-        super(driverHolder);
-    }
 
     @Step("Proceed checkout")
     public CheckoutPage proceedCheckout() {

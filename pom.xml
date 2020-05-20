@@ -116,7 +116,7 @@
                     <properties>
                         <property>
                             <name>listener</name>
-                            <value>io.qameta.allure.junit5.AllureJunit5</value>
+                            <value>io.qameta.allure.testng.AllureTestNg</value>
                         </property>
                     </properties>
                     <argLine>

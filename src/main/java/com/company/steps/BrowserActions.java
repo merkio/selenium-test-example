@@ -16,51 +16,43 @@ import java.util.List;
 @Component
 public class BrowserActions extends BrowserWaiters {
 
-    public BrowserActions(WebDriverHolder driverHolder) {
-        super(driverHolder);
-    }
-
-    public List<WebElement> tryFindElements(By elementName) {
+    public static List<WebElement> tryFindElements(By elementName) {
         return getFluentWait().until(ExpectedConditions.presenceOfAllElementsLocatedBy(elementName));
     }
 
-    public WebElement tryFindElement(By elementName) {
+    public static WebElement tryFindElement(By elementName) {
         return getFluentWait().until(ExpectedConditions.presenceOfElementLocated(elementName));
     }
 
     @Step("Open url '{url}'")
-    public String openPage(String url) {
+    public static String openPage(String url) {
         log.info("Opened page with url '{}'", url);
-        getDriver().get(url);
-        return getDriver().getCurrentUrl();
-
+        WebDriverHolder.getDriver().get(url);
+        return WebDriverHolder.getDriver().getCurrentUrl();
     }
 
     @Step("Open Url {url} in new tab")
-    public BrowserActions openUrlInNewTab(String url) {
-        JavascriptExecutor jse = (JavascriptExecutor) getDriver();
+    public static void openUrlInNewTab(String url) {
+        JavascriptExecutor jse = (JavascriptExecutor) WebDriverHolder.getDriver();
         jse.executeScript("function createDoc(){var w = window.open('" + url + "', '_blank');}; createDoc();");
-        return this;
     }
 
     @Step("Accept alert")
-    public BrowserActions acceptBrowserAlert() {
-        getDriver().switchTo().alert().accept();
-        return this;
+    public static void acceptBrowserAlert() {
+        WebDriverHolder.getDriver().switchTo().alert().accept();
     }
 
     @Step("Should see element {element}")
-    public BrowserActions iShouldSee(By element) {
+    public static void iShouldSee(By element) {
         try {
             getFluentWait().until(ExpectedConditions.visibilityOfElementLocated(element));
         } catch (TimeoutException ignored) {
             Assert.fail(String.format("Locator %s is not found", element));
         }
-        return this;
     }
 
     @Step("Element {element} has text {text}")
-    public boolean hasText(By element, String text) {
+    public static boolean hasText(By element, String text) {
         log.info("Checking if element has text '{}'", text);
         try {
             waitUntilElementVisible(element);
@@ -72,27 +64,27 @@ public class BrowserActions extends BrowserWaiters {
     }
 
     @Step("Url contains {text}")
-    public boolean urlContains(String text) {
+    public static boolean urlContains(String text) {
         log.info("Checking if url contains '{}'", text);
-        return getDriver().getCurrentUrl().contains(text);
+        return WebDriverHolder.getDriver().getCurrentUrl().contains(text);
     }
 
     @Step("Check is the element {selector} exist")
-    public Boolean thisElementExists(By selector, int waitingTime) {
+    public static boolean thisElementExists(By selector, int waitingTime) {
         try {
             getCustomFluentWait(waitingTime).until(ExpectedConditions.visibilityOfElementLocated(selector));
-            return Boolean.TRUE;
+            return true;
         } catch (TimeoutException ignored) {
-            return Boolean.FALSE;
+            return false;
         }
     }
 
     @Step("Check alert")
-    public void checkAlert(int timeoutSec) {
+    public static void checkAlert(int timeoutSec) {
         try {
-            WebDriverWait wait = new WebDriverWait(getDriver(), timeoutSec);
+            WebDriverWait wait = new WebDriverWait(WebDriverHolder.getDriver(), timeoutSec);
             wait.until(ExpectedConditions.alertIsPresent());
-            Alert alert = getDriver().switchTo().alert();
+            Alert alert = WebDriverHolder.getDriver().switchTo().alert();
             alert.accept();
         } catch (Exception err) {
             log.error("Error during checking alert", err);
@@ -100,32 +92,32 @@ public class BrowserActions extends BrowserWaiters {
     }
 
     @Step("Click on {element}")
-    public void click(By element) {
+    public static void click(By element) {
         tryFindElement(element).click();
     }
 
     @Step("Fill the element '{element}' with text '{text}'")
-    public void writeText(By element, String text) {
+    public static void writeText(By element, String text) {
         tryFindElement(element).sendKeys(text);
     }
 
     @Step("Get text from element '{element}'")
-    public String getText(By element) {
+    public static String getText(By element) {
         return tryFindElement(element).getText();
     }
 
     @Step("Select element '{element}' by value '{value}'")
-    public void selectByValue(By element, String value) {
+    public static void selectByValue(By element, String value) {
         new Select(tryFindElement(element)).selectByValue(value);
     }
 
     @Step("Select element '{element}' by visible text '{text}'")
-    public void selectByVisibleText(By element, String text) {
+    public static void selectByVisibleText(By element, String text) {
         new Select(tryFindElement(element)).selectByVisibleText(text);
     }
 
     @Step("Scroll to the element '{element}'")
-    public void scrollToElement(By element) {
+    public static void scrollToElement(By element) {
 
     }
 }

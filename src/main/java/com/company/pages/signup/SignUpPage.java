@@ -1,9 +1,9 @@
 package com.company.pages.signup;
 
-import com.company.WebDriverHolder;
 import com.company.pages.account.AccountPage;
 import com.company.pages.base.BasePage;
 import io.qameta.allure.Step;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -14,14 +14,10 @@ import static com.company.pages.signup.SignUpPageLocators.*;
 
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class SignUpPage extends BasePage {
 
     private final AccountPage accountPage;
-
-    public SignUpPage(WebDriverHolder driverHolder, AccountPage accountPage) {
-        super(driverHolder);
-        this.accountPage = accountPage;
-    }
 
     @Step("Sign up new user")
     public AccountPage signUp() {

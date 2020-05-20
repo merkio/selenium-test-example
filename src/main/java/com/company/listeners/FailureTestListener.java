@@ -1,10 +1,9 @@
 package com.company.listeners;
 
 import com.company.WebDriverHolder;
-import com.company.steps.BrowserActions;
 import io.qameta.allure.Attachment;
 import io.qameta.allure.Step;
-import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.OutputType;
@@ -13,7 +12,6 @@ import org.openqa.selenium.logging.LogEntries;
 import org.openqa.selenium.logging.LogEntry;
 import org.openqa.selenium.logging.LogType;
 import org.openqa.selenium.remote.RemoteWebDriver;
-import org.springframework.stereotype.Component;
 import org.testng.ITestListener;
 import org.testng.ITestResult;
 
@@ -22,25 +20,24 @@ import java.io.IOException;
 import java.util.Objects;
 
 @Slf4j
-@Component
-@RequiredArgsConstructor
 public class FailureTestListener implements ITestListener {
 
-    private final WebDriverHolder webDriverHolder;
-    private final BrowserActions browserActions;
+    @Override
+    public void onTestSuccess(ITestResult result) {
+        analyzeLog(result.getMethod().getMethodName());
+    }
 
     @Override
+    @SneakyThrows
     public void onTestFailure(ITestResult result) {
         uploadScreenshots(result);
         analyzeLog(result.getMethod().getMethodName());
     }
 
-    private void uploadScreenshots(ITestResult testResult) {
-        if (Objects.nonNull(webDriverHolder.getDriver())) {
+    private void uploadScreenshots(ITestResult testResult) throws IOException {
+        if (Objects.nonNull(WebDriverHolder.getDriver())) {
             try {
-                browserActions.checkAlert(0);
-
-                File scrFile = ((TakesScreenshot) webDriverHolder.getDriver()).getScreenshotAs(OutputType.FILE);
+                File scrFile = ((TakesScreenshot) WebDriverHolder.getDriver()).getScreenshotAs(OutputType.FILE);
                 attachBrowserScreenshot(scrFile);
             } catch (Exception e) {
                 log.error("Failed to attach screenshot to test [{}]", testResult.getName(), e);
@@ -55,13 +52,11 @@ public class FailureTestListener implements ITestListener {
 
     @Step("Adding collected logs")
     private void analyzeLog(String methodName) {
-        if (Objects.nonNull(webDriverHolder.getDriver())) {
-            browserActions.checkAlert(0);
+        if (Objects.nonNull(WebDriverHolder.getDriver())) {
+            log.info("Last URL was: '{}'", WebDriverHolder.getDriver().getCurrentUrl());
 
-            log.info("Last URL was: ${webDriverHolder.getDriver().getCurrentUrl()}");
-
-            if (((RemoteWebDriver) webDriverHolder.getDriver()).getCapabilities().getBrowserName().equals("chrome")) {
-                LogEntries logEntries = webDriverHolder.getDriver().manage().logs().get(LogType.BROWSER);
+            if (((RemoteWebDriver) WebDriverHolder.getDriver()).getCapabilities().getBrowserName().equals("chrome")) {
+                LogEntries logEntries = WebDriverHolder.getDriver().manage().logs().get(LogType.BROWSER);
                 for (LogEntry entry : logEntries) {
                     log.info("Following logs were found during execution test {} {}", methodName, entry.getMessage());
                 }

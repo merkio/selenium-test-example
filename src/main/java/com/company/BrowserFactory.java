@@ -1,8 +1,6 @@
 package com.company;
 
-import com.company.config.BrowserProperties;
 import io.github.bonigarcia.wdm.WebDriverManager;
-import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.WebDriver;
@@ -22,31 +20,32 @@ import java.net.URL;
 import java.util.*;
 import java.util.logging.Level;
 
+import static com.company.config.BrowserProperties.BROWSER_PROPERTIES;
+
 @Slf4j
 @Component
-@RequiredArgsConstructor
 public class BrowserFactory {
 
-    private final BrowserProperties browserProperties;
     public static List<String> videoNames = new LinkedList<>();
     public static Map<String, String> userAgents = new HashMap<>();
 
     @SneakyThrows(MalformedURLException.class)
-    private WebDriver getChromeBrowser(String testName) {
+    private static WebDriver getChromeBrowser(String testName) {
         DesiredCapabilities caps = new DesiredCapabilities();
         LoggingPreferences logPrefs = new LoggingPreferences();
         ChromeOptions options = new ChromeOptions();
 
         logPrefs.enable(LogType.BROWSER, Level.WARNING);
 
-        caps.setVersion(browserProperties.getVersion());
+        caps.setVersion(BROWSER_PROPERTIES.version());
         caps.setCapability(CapabilityType.LOGGING_PREFS, logPrefs);
         caps.setCapability("elementScrollBehavior", true);
+
         caps.setCapability("name", testName);
-        caps.setCapability("enableVNC", browserProperties.isEnableVNC());
+        caps.setCapability("enableVNC", BROWSER_PROPERTIES.enableVNC());
         String uuid = UUID.randomUUID().toString();
 
-        if (browserProperties.isEnableCustomUserAgent()) {
+        if (BROWSER_PROPERTIES.enableCustomUserAgent()) {
             options.addArguments("--user-agent=selenium" + ";test=" + testName + ";uuid=" + uuid);
             userAgents.put(testName, uuid);
         }
@@ -54,15 +53,15 @@ public class BrowserFactory {
         caps.setCapability(ChromeOptions.CAPABILITY, options);
         caps.setCapability("customCapability", "test");
 
-        if (browserProperties.isExecuteRemotely()) {
+        if (BROWSER_PROPERTIES.executeRemotely()) {
             String videoName = testName + new Date().getTime() + ".mp4";
-            if (browserProperties.isEnableVideo()) {
+            if (BROWSER_PROPERTIES.enableVideo()) {
                 log.info("Enabling video recording because test failed");
                 caps.setCapability("enableVideo", true);
                 caps.setCapability("videoName", videoName);
                 videoNames.add(videoName);
             }
-            return new RemoteWebDriver(new URL(browserProperties.getHub()), caps);
+            return new RemoteWebDriver(new URL(BROWSER_PROPERTIES.hub()), caps);
         } else {
             WebDriverManager.chromedriver().setup();
             options.merge(caps);
@@ -71,20 +70,20 @@ public class BrowserFactory {
     }
 
     @SneakyThrows(MalformedURLException.class)
-    private WebDriver getFireFoxBrowser(String testName) {
+    private static WebDriver getFireFoxBrowser(String testName) {
         DesiredCapabilities caps = DesiredCapabilities.firefox();
         LoggingPreferences logPrefs = new LoggingPreferences();
         FirefoxOptions options = new FirefoxOptions();
 
-        caps.setVersion(browserProperties.getVersion());
+        caps.setVersion(BROWSER_PROPERTIES.version());
         logPrefs.enable(LogType.BROWSER, Level.WARNING);
         caps.setCapability(CapabilityType.LOGGING_PREFS, logPrefs);
         caps.setCapability("elementScrollBehavior", true);
-        caps.setCapability("enableVNC", browserProperties.isEnableVNC());
+        caps.setCapability("enableVNC", BROWSER_PROPERTIES.enableVNC());
         caps.setCapability("name", testName);
 
-        if (browserProperties.isExecuteRemotely()) {
-            return new RemoteWebDriver(new URL(browserProperties.getHub()), caps);
+        if (BROWSER_PROPERTIES.executeRemotely()) {
+            return new RemoteWebDriver(new URL(BROWSER_PROPERTIES.hub()), caps);
         } else {
             WebDriverManager.firefoxdriver().setup();
             options.merge(caps);
@@ -93,7 +92,7 @@ public class BrowserFactory {
     }
 
     @SneakyThrows(MalformedURLException.class)
-    private WebDriver getMobileWebEmulationBrowser(String testName) {
+    private static WebDriver getMobileWebEmulationBrowser(String testName) {
         DesiredCapabilities caps = DesiredCapabilities.chrome();
         LoggingPreferences logPrefs = new LoggingPreferences();
         ChromeOptions chromeOptions = new ChromeOptions();
@@ -102,18 +101,18 @@ public class BrowserFactory {
 
         caps.setCapability(CapabilityType.LOGGING_PREFS, logPrefs);
         caps.setCapability("name", testName);
-        caps.setCapability("enableVNC", browserProperties.isEnableVNC());
+        caps.setCapability("enableVNC", BROWSER_PROPERTIES.enableVNC());
 
         Map<String, String> mobileEmulation = new HashMap<>();
         mobileEmulation.put("deviceName", "iPhone 6");
 
-        caps.setVersion(browserProperties.getVersion());
+        caps.setVersion(BROWSER_PROPERTIES.version());
         chromeOptions.setCapability("mobileEmulation", mobileEmulation);
         caps.setCapability(ChromeOptions.CAPABILITY, chromeOptions);
         caps.setCapability("name", testName);
 
-        if (browserProperties.isExecuteRemotely()) {
-            return new RemoteWebDriver(new URL(browserProperties.getHub()), caps);
+        if (BROWSER_PROPERTIES.executeRemotely()) {
+            return new RemoteWebDriver(new URL(BROWSER_PROPERTIES.hub()), caps);
         } else {
             WebDriverManager.chromedriver().setup();
             chromeOptions.merge(caps);
@@ -121,7 +120,7 @@ public class BrowserFactory {
         }
     }
 
-    public WebDriver getBrowser(String browserName, String testName) {
+    public static WebDriver getBrowser(String browserName, String testName) {
         switch (browserName) {
             case "firefox":
                 return getFireFoxBrowser(testName);

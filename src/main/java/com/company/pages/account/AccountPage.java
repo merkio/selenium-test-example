@@ -1,9 +1,9 @@
 package com.company.pages.account;
 
-import com.company.WebDriverHolder;
 import com.company.pages.base.BasePage;
 import com.company.pages.category.CategoryPage;
 import io.qameta.allure.Step;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.testng.Assert;
@@ -12,14 +12,10 @@ import static com.company.pages.account.AccountPageLocators.*;
 
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class AccountPage extends BasePage {
 
     private final CategoryPage categoryPage;
-
-    public AccountPage(WebDriverHolder driverHolder, CategoryPage categoryPage) {
-        super(driverHolder);
-        this.categoryPage = categoryPage;
-    }
 
     @Step("Go to the category with linkText women")
     public CategoryPage goToWomenCategoryPage() {

@@ -1,11 +1,11 @@
 package com.company.pages.login;
 
-import com.company.WebDriverHolder;
 import com.company.config.TestProperties;
 import com.company.pages.account.AccountPage;
 import com.company.pages.base.BasePage;
 import com.company.pages.signup.SignUpPage;
 import io.qameta.allure.Step;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -13,21 +13,12 @@ import static com.company.pages.login.LoginPageLocators.*;
 
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class LoginPage extends BasePage {
 
     private final TestProperties testProperties;
     private final AccountPage accountPage;
     private final SignUpPage signUpPage;
-
-    public LoginPage(WebDriverHolder driverHolder,
-                     TestProperties testProperties,
-                     AccountPage accountPage,
-                     SignUpPage signUpPage) {
-        super(driverHolder);
-        this.testProperties = testProperties;
-        this.accountPage = accountPage;
-        this.signUpPage = signUpPage;
-    }
 
     @Step("Login as default user")
     public AccountPage loginAsDefaultUser() {
